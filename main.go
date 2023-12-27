@@ -77,8 +77,9 @@ func (i *IPv6Routing) DecodeFromBytes(data []byte, df gopacket.DecodeFeedback) e
 	i.HeaderLength = data[1]
 	i.RoutingType = data[2]
 	i.SegmentsLeft = data[3]
-	if len(data)-8 != int(i.HeaderLength)*8 {
-		return fmt.Errorf("IPv6Routing: data length mismatch")
+	expectedLen := int(i.HeaderLength+1) * 8
+	if len(i.Contents) != expectedLen {
+		return fmt.Errorf("IPv6Routing: data length mismatch: len(Contents) expected %d got %d", expectedLen, len(i.Contents))
 	}
 	switch i.RoutingType {
 	case 0:
